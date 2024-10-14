@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Inscription</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .image-container {
+            flex: 1;
+            background-image: url('https://png.pngtree.com/png-clipart/20230504/original/pngtree-free-vector-login-concept-illustration-png-image_9140539.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100%;
+        }
+
+        .form-container {
+            flex: 0 0 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form {
+            width: 100%;
+            text-align: center;
+        }
+
+        .form .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+
+        .form h1 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .error-messages {
+            margin-bottom: 1rem;
+            color: red;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .form-group input {
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-group .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            display: inline;
+        }
+
+        .error-text {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            width: 100%;
+            text-align: left;
+        }
+
+        .form button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .form button:hover {
+            background-color: #0056b3;
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .link a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .image-container,
+            .form-container {
+                flex: 1 1 auto;
+                width: 100%;
+            }
+
+            .image-container {
+                border-radius: 8px 8px 0 0;
+            }
+
+            .form-container {
+                border-radius: 0 0 8px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Conteneur de l'image -->
+        <div class="image-container"></div>
+
+        <!-- Conteneur du formulaire -->
+        <div class="form-container">
+            <div class="form">
+                <!-- Icône du formulaire -->
+                <div class="icon">
+                    <i class="fa fa-user-circle" aria-hidden="true"></i>
+                </div>
+
+                <h1>INSCRIPTION</h1>
+
+                <!-- Formulaire d'inscription -->
+                <form method="post" action="{% url 'inscription' %}">
+                    {% csrf_token %}
+
+                    <!-- Champ pour le nom d'utilisateur -->
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <div class="error-text">
+                            {{ form.username.errors.as_text }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Champ pour l'adresse e-mail -->
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i>
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="error-text">
+                            {{ form.email.errors.as_text }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Champ pour le mot de passe -->
+                    <div class="form-group">
+                        <label for="password1">
+                            <i class="fas fa-lock"></i>
+                        </label>
+                        {{ form.password1 }}
+                        <i class="fas fa-eye toggle-password" id="toggle-password1"></i>
+                        {% if form.password1.errors %}
+                        <div class="error-text">
+                            {{ form.password1.errors.as_text }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Champ pour la confirmation du mot de passe -->
+                    <div class="form-group">
+                        <label for="password2">
+                            <i class="fas fa-lock"></i>
+                        </label>
+                        {{ form.password2 }}
+                        <i class="fas fa-eye toggle-password" id="toggle-password2"></i>
+                        {% if form.password2.errors %}
+                        <div class="error-text">
+                            {{ form.password2.errors.as_text }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <button type="submit">S'inscrire</button>
+                </form>
+
+                <!-- Lien vers la page de connexion -->
+                <p class="link">Déjà inscrit ? <a href="{% url 'connexion' %}">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility(id) {
+            const passwordField = document.getElementById(id);
+            const eyeIcon = document.getElementById(`toggle-${id}`);
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+
+        document.querySelectorAll('.toggle-password').forEach(item => {
+            item.addEventListener('click', function () {
+                const inputId = this.previousElementSibling.id;
+                togglePasswordVisibility(inputId);
+            });
+        });
+    </script>
+</body>
+</html>
