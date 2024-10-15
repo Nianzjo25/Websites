@@ -53,12 +53,12 @@
                   <p>À propos</p>
                 </a>
               </li>
-              <li class="nav-item">
+              {% comment %} <li class="nav-item">
                 <a class="nav-link" href="#0">
                   <i class="material-icons">settings</i>
                   <p>Paramètres</p>
                 </a>
-              </li>
+              </li> {% endcomment %}
           <!-- Add your sidebar links here -->
         </ul>
       </div>
@@ -129,7 +129,7 @@
           
           <!-- Results Container -->
           <div id="resultsContainer" style="display:none; font-size:25px;" class="mt-4">
-              <h2>Résultats des calculs</h2>
+              <h2 style="color: #007BFF;">Résultats des calculs</h2>
               <pre id="results"></pre>
               <div id="interpretationContainer" class="mt-3">
                   <strong>Interprétation : </strong>
@@ -194,11 +194,13 @@
                 alert('Erreur : ' + data.error);
             } else {
                 resultsContainer.style.display = 'block';
-                let resultsText = 'F1= ' + data.results.F1.toFixed(2) + '\n' +
-                                  'F2= ' + data.results.F2.toFixed(2) + '\n' +
-                                  'F3= ' + data.results.F3.toFixed(2) + '\n' +
-                                  'IQE= ' + data.results.IQE.toFixed(2) + '\n' +  // Added IQE
-                                  'Somme des indices = ' + (data.results.F1 + data.results.F2 + data.results.F3).toFixed(2);
+                // Calculer la somme des indices
+                const sommeIndices = (data.results.F1 + data.results.F2 + data.results.F3).toFixed(2);
+                let resultsText = `<div style="margin-bottom: 10px;"><strong>F1 =</strong> ${data.results.F1.toFixed(2)}</div>` +
+                          `<div style="margin-bottom: 10px;"><strong>F2 =</strong> ${data.results.F2.toFixed(2)}</div>` +
+                          `<div style="margin-bottom: 10px;"><strong>F3 =</strong> ${data.results.F3.toFixed(2)}</div>` +
+                          `<div style="margin-bottom: 10px;"><strong>IQE =</strong> ${data.results.IQE.toFixed(2)}</div>` +
+                          `<div style="margin-bottom: 10px;"><strong>Somme des indices =</strong> ${sommeIndices}</div>`;
                 resultsPre.innerHTML = resultsText;
 
                 // Ajouter l'icône devant l'interprétation
@@ -221,7 +223,7 @@
                         icon = '<i class="fa fa-exclamation-triangle" style="color: darkred;"></i>';
                         break;
                 }
-                interpretationContainer.innerHTML = icon + ' ' + data.interpretation;
+                interpretationContainer.innerHTML = icon + ' <strong>' + data.interpretation + '</strong>';
             }
           })
         
