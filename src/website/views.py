@@ -32,7 +32,7 @@ def index(request):
 def users(request):
     user = request.user
     profile = Profile.objects.get(user=user)
-    profile_image = profile.image.url if hasattr(user, 'profile') and profile.image else 'profile_images/images.jpg'
+    profile_image = profile.profile_image.url if hasattr(user, 'profile') and profile.profile_image else 'profile_images/images.jpg'
     
     context = {
         'user': user,
