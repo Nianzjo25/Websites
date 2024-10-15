@@ -1,5 +1,5 @@
 # Ignorer les dossiers d'environnement virtuel
-website/
+websitetest/
 env/
 venv/
 
