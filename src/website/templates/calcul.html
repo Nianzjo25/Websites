@@ -128,10 +128,15 @@
           </div>
           
           <!-- Results Container -->
-          <div id="resultsContainer" style="display:none;" class="mt-4">
+          <div id="resultsContainer" style="display:none; font-size:25px;" class="mt-4">
               <h2>Résultats des calculs</h2>
               <pre id="results"></pre>
+              <div id="interpretationContainer" class="mt-3">
+                  <strong>Interprétation : </strong>
+                  <span id="interpretation"></span>
+              </div>
           </div>
+        
           
           <script>
               function updateFileName() {
@@ -185,16 +190,42 @@
           })
           .then(response => response.json())
           .then(data => {
-              if (data.error) {
-                  alert('Erreur : ' + data.error);
-              } else {
-                  resultsContainer.style.display = 'block';
-                  let resultsText = JSON.stringify(data.results, null, 2);
-                  resultsText += '\n\nSomme des indices : ' + (data.results.F1 + data.results.F2 + data.results.F3).toFixed(2);
-                  resultsText += '\n\nInterprétation : ' + data.interpretation;
-                  resultsPre.textContent = resultsText;
-              }
+            if (data.error) {
+                alert('Erreur : ' + data.error);
+            } else {
+                resultsContainer.style.display = 'block';
+                let resultsText = 'F1= ' + data.results.F1.toFixed(2) + '\n' +
+                                  'F2= ' + data.results.F2.toFixed(2) + '\n' +
+                                  'F3= ' + data.results.F3.toFixed(2) + '\n' +
+                                  'IQE= ' + data.results.IQE.toFixed(2) + '\n' +  // Added IQE
+                                  'Somme des indices = ' + (data.results.F1 + data.results.F2 + data.results.F3).toFixed(2);
+                resultsPre.innerHTML = resultsText;
+
+                // Ajouter l'icône devant l'interprétation
+                const interpretationContainer = document.getElementById('interpretation');
+                let icon = '';
+                switch (data.interpretation) {
+                    case 'Excellente : L\'eau est propre et adaptée à toutes les utilisations.':
+                        icon = '<i class="fa fa-thumbs-up" style="color: green;"></i>';
+                        break;
+                    case 'Bonne : La qualité de l\'eau est considérée comme adéquate.':
+                        icon = '<i class="fa fa-smile" style="color: blue;"></i>';
+                        break;
+                    case 'Moyenne : La qualité de l\'eau est acceptable.':
+                        icon = '<i class="fa fa-meh" style="color: orange;"></i>';
+                        break;
+                    case 'Médiocre : L\'eau est marginale.':
+                        icon = '<i class="fa fa-frown" style="color: red;"></i>';
+                        break;
+                    case 'Mauvais : L\'eau est polluée.':
+                        icon = '<i class="fa fa-exclamation-triangle" style="color: darkred;"></i>';
+                        break;
+                }
+                interpretationContainer.innerHTML = icon + ' ' + data.interpretation;
+            }
           })
+        
+        
           .catch(error => {
               alert('Erreur lors de l\'upload : ' + error.message);
           });
