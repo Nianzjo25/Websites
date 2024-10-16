@@ -193,12 +193,11 @@ class FileUploadView(TemplateView):
             import traceback
             traceback.print_exc()
             return JsonResponse({'error': str(e)}, status=500)
-
         
     def lire_fichier(self, uploaded_file):
         file_extension = uploaded_file.name.split('.')[-1].lower()
 
-        # Lire le fichier selon son type
+        # Read the file based on its type
         if file_extension == 'csv':
             try:
                 df = pd.read_csv(uploaded_file, encoding='utf-8')
@@ -207,11 +206,17 @@ class FileUploadView(TemplateView):
             except pd.errors.EmptyDataError:
                 raise ValueError('Le fichier CSV est vide ou mal formaté.')
 
-        elif file_extension == 'xlsx':
+        elif file_extension in ['xls', 'xlsx']:
             try:
                 df = pd.read_excel(uploaded_file, engine='openpyxl')
             except ImportError:
                 raise ValueError('Veuillez installer openpyxl pour traiter les fichiers Excel.')
+
+        elif file_extension == 'json':
+            try:
+                df = pd.read_json(uploaded_file)
+            except ValueError:
+                raise ValueError('Le fichier JSON est mal formaté.')
 
         else:
             raise ValueError('Format de fichier non pris en charge.')
@@ -220,7 +225,6 @@ class FileUploadView(TemplateView):
         norme_type = self.request.POST.get('norme')
         norme = Norme.objects.get(id_norme=norme_type)
         norme_parametres = NormeParametres.objects.filter(norme=norme)
-
 
         # Définir les types attendus pour chaque paramètre
         types_attendus = {
@@ -231,55 +235,32 @@ class FileUploadView(TemplateView):
             'Enterocoque': int, 'Aldicarbe': int, 'Simazine': int, 'Désisopropylatratzine': int
         }
 
+        # Récupérer les en-têtes du fichier
+        headers = df.columns.tolist()
+        print(headers)
+
         # Créer un dictionnaire des valeurs indicatrices avec les types corrects
         valeurs_normes = {}
         for parametre in norme_parametres:
             libelle = parametre.parametre.libelle
             valeur = parametre.valeurs_indicatrices
-            if libelle in types_attendus:
-                valeurs_normes[libelle] = types_attendus[libelle](float(valeur))
-            else:
-                valeurs_normes[libelle] = float(valeur)
+            if libelle in headers:  # Check if the parameter name is in the headers
+                if libelle in types_attendus:
+                    valeurs_normes[libelle] = types_attendus[libelle](float(valeur))
+                else:
+                    valeurs_normes[libelle] = float(valeur)
 
         # Corriger le nom 'Enterocoque' si nécessaire
         if 'Enterocoque' in valeurs_normes and 'Enterucoque' not in valeurs_normes:
             valeurs_normes['Enterucoque'] = valeurs_normes.pop('Enterocoque')
 
-        print('valeurs_normes formatées:', valeurs_normes)
-        print('Types des valeurs dans valeurs_normes:')
-        for key, value in valeurs_normes.items():
-            print(f"{key}: {type(value)}")
-
-        # Le reste du code reste inchangé
-        dernier_parametres = {
-            'TDs': 300, 'NO2-': 0.1, 'NO3': 50, 'NH4+': 4, 'DBO5': 3,
-            'pH': 6.5, 'DO': 5, 'PO4-': 0.5, 'PT': 0.7, 'SO4': 250,
-            'NTK': 3, 'Hg': 1, 'Pb': 50, 'Cd': 5, 'As': 10,
-            'Cu': 50, 'Mn': 0.03, 'Fe': 300, 'Zn': 5000, 'E.coli': 200,
-            'Enterucoque': 100, 'Aldicarbe': 2, 'Simazine': 2, 'Désisopropylatratzine': 2
-        }
-
-        print('dernier_parametres formatées:', dernier_parametres)
-        print('Types des valeurs dans dernier_parametres:')
-        for key, value in dernier_parametres.items():
-            print(f"{key}: {type(value)}")
-        
-        # Vérifier si les clés sont identiques
-        print('Clés manquantes dans valeurs_normes:', set(dernier_parametres.keys()) - set(valeurs_normes.keys()))
-        print('Clés supplémentaires dans valeurs_normes:', set(valeurs_normes.keys()) - set(dernier_parametres.keys()))
-
-        # Vérifier si les valeurs sont identiques
-        for key in set(valeurs_normes.keys()) & set(dernier_parametres.keys()):
-            if valeurs_normes[key] != dernier_parametres[key]:
-                print(f"Différence pour {key}: valeurs_normes={valeurs_normes[key]}, dernier_parametres={dernier_parametres[key]}")
-
         # Convertir le dictionnaire en DataFrame et concaténer
         dernier_df = pd.DataFrame([valeurs_normes])
         df = pd.concat([df, dernier_df], ignore_index=True)
 
+        print(df.tail(5))
+
         return df
-
-
             
     def interpreter_indice_qualite(self, indice_qualite):
         if indice_qualite >= 95:
