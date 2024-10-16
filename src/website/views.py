@@ -263,16 +263,21 @@ class FileUploadView(TemplateView):
         return df
             
     def interpreter_indice_qualite(self, indice_qualite):
-        if indice_qualite >= 95:
-            return 'Excellente : L\'eau est propre et adaptée à toutes les utilisations.'
-        elif indice_qualite >= 80:
-            return 'Bonne : La qualité de l\'eau est considérée comme adéquate.'
-        elif indice_qualite >= 65:
-            return 'Moyenne : La qualité de l\'eau est acceptable.'
-        elif indice_qualite >= 45:
-            return 'Médiocre : L\'eau est marginale.'
-        else:
-            return 'Mauvais : L\'eau est polluée.'
+     if indice_qualite >= 95:
+        return ("Excellente : L'eau est très propre et convient à toutes les utilisations, "
+                "y compris la consommation humaine, la baignade et l'irrigation.")
+     elif indice_qualite >= 80:
+        return ("Bonne : La qualité de l'eau est adéquate pour la plupart des usages, "
+                "bien qu'elle puisse nécessiter un léger traitement pour la consommation.")
+     elif indice_qualite >= 65:
+        return ("Moyenne : La qualité de l'eau est acceptable, mais il est conseillé "
+                "de la traiter avant de l'utiliser pour boire ou pour des activités sensibles.")
+     elif indice_qualite >= 45:
+        return ("Médiocre : La qualité de l'eau est marginale, ce qui signifie qu'elle peut "
+                "présenter des risques pour la santé et devrait être utilisée avec précaution.")
+     else:
+        return ("Mauvais : L'eau est fortement polluée et n'est pas sûre pour la consommation, "
+                "la baignade ou d'autres usages. Des mesures de traitement sont nécessaires.")
         
     # def comparer_et_calculer(self, df, norme):
     #     resultats = {}
