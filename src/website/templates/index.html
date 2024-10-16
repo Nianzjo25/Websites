@@ -3,7 +3,7 @@
 <html lang="fr">
 
 <head>
-  <title>{% block title %}Mon app de calcul {% endblock %}</title>
+  <title>{% block title %}Application de calcul {% endblock %}</title>
   <!-- Meta tags requis -->
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -103,7 +103,7 @@
         <div class="container-fluid">
           {% block content %}
           <h1>Bienvenue, {{ request.user.username }} <span class="fas fa-hand-wave"></span></h1>
-          <p class="text-left">Voici des informations sur les indices de qualité environnementale.</p>
+          <p class="text-left">Voici des informations sur les indices de qualité environnementale, des outils précieux qui nous aident à comprendre et à mesurer la santé de notre environnement. En combinant divers indicateurs, tels que la qualité de l'air, de l'eau et la biodiversité, ces indices nous guident vers des décisions éclairées et nous sensibilisent aux enjeux qui nous concernent tous.</p>
           <a href="{% url 'upload' %}" class="btn btn-link" style="color: #007BFF; margin-left: 0; margin-top:0; padding-left: 0; padding-top: 0;">Commencez le calcul de vos indices !</a>
       
           <h2>Tout savoir sur les indices de qualité environnementale</h2>
@@ -159,8 +159,7 @@
               </ol>
               <p>Ces étapes garantissent une évaluation précise et fiable de la qualité environnementale.</p>
           </div>
-      {% endblock %}
-      
+      {% endblock %}   
         </div>
       </div>
       <footer class="footer">
@@ -178,8 +177,8 @@
             &copy;
             <script>
               document.write(new Date().getFullYear())
-            </script>, créé avec <i class="material-icons">favorite</i> par
-            <a href="https://www.creative-tim.com" target="_blank">LARST</a>.
+            </script>, made with <i class="material-icons">favorite</i> by
+            <a href="https://www.creative-tim.com" target="_blank">LARST</a> for a better web.
           </div>
         </div>
       </footer>
